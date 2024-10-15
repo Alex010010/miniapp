@@ -90,7 +90,7 @@
         <button onclick="toggleMainButton();">Toggle Main Button</button>
         
         <h1>API Call</h1>
-        <button onclick="callApi()">Call API</button>
+        <button onclick="sendDataToBot()">Send Data to Bot</button>
 
     </main>
     <div id="viewport"></div>
@@ -100,6 +100,12 @@
     <script>
         // Init TWA
         Telegram.WebApp.ready();
+
+        // Enviar datos al bot usando Telegram.WebApp.sendData
+        function sendDataToBot() {
+            const data = JSON.stringify({ action: 'call_api', apiUrl: 'https://jsonplaceholder.typicode.com/posts/1' });
+            Telegram.WebApp.sendData(data); // Enviar al bot
+        }
 
         // Event occurs whenever theme settings are changed in the user's Telegram app (including switching to night mode).
         Telegram.WebApp.onEvent('themeChanged', function() {
@@ -138,24 +144,6 @@
             } else {
                 Telegram.WebApp.MainButton.show();
             }
-        };
-
-        // Function to call an external API and show the result in an alert
-        function callApi() {
-            const apiUrl = 'https://jsonplaceholder.typicode.com/posts/1'; // URL del servicio REST
-
-            // Hacer la solicitud GET
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    // Mostrar la respuesta en la consola o actualizar la UI
-                    console.log('API Response:', data);
-                    Telegram.WebApp.showAlert(`API Response: ${JSON.stringify(data)}`);
-                })
-                .catch(error => {
-                    console.error('Error calling API:', error);
-                    Telegram.WebApp.showAlert('Error calling API');
-                });
         };
 
         function setViewportData() {

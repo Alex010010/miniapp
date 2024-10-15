@@ -103,8 +103,9 @@
 
         // Enviar datos al bot usando Telegram.WebApp.sendData
         function sendDataToBot() {
+            Telegram.WebApp.showAlert("Alex");
             const data = JSON.stringify({ action: 'call_api', apiUrl: 'https://jsonplaceholder.typicode.com/posts/1' });
-            Telegram.WebApp.showAlert(data)
+            Telegram.WebApp.showAlert(data);
             Telegram.WebApp.sendData(data); // Enviar al bot
         }
 

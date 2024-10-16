@@ -34,8 +34,8 @@
                 message: "Hola desde la Mini App!",
                 timestamp: new Date().toISOString()
             };
-            tg.sendData("alex");
             tg.sendData(JSON.stringify(data));
+            tg.close();
         });
     </script>
 </body>

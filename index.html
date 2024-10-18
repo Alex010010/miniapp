@@ -3,40 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini App de Telegram</title>
+    <title>Mini App Telegram</title>
+    <!-- Cargar la librería de Telegram Web App -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
+    <script>
+        function sendMessage() {
+            const message = document.getElementById("inputMessage").value;
+            // Enviar el mensaje al bot usando el SDK de Telegram Web App
+            Telegram.WebApp.sendData(message); 
         }
-        button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
+
+        window.onload = function() {
+            // Configura el evento para cuando los datos son enviados al bot
+            Telegram.WebApp.onEvent('mainButtonClicked', function() {
+                const message = document.getElementById("inputMessage").value;
+                alert('Mensaje enviado al bot: ' + message);
+            });
         }
-    </style>
+    </script>
 </head>
 <body>
-    <h1>Mini App de Telegram</h1>
-    <p>Esta es una Mini App de ejemplo.</p>
-    <button id="sendData">Enviar Datos al Bot</button>
-
-    <script>
-        let tg = window.Telegram.WebApp;
-        tg.expand();
-
-        document.getElementById('sendData').addEventListener('click', () => {
-            let data = {
-                message: "Hola desde la Mini App!",
-                timestamp: new Date().toISOString()
-            };
-            tg.sendData(JSON.stringify(data));
-            tg.close();
-        });
-    </script>
+    <h1>Envía un mensaje al bot de Telegram</h1>
+    <input type="text" id="inputMessage" placeholder="Escribe algo...">
+    <button onclick="sendMessage()">Enviar</button>
 </body>
 </html>

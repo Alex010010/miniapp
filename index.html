@@ -7,17 +7,30 @@
     <!-- Cargar la librería de Telegram Web App -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
+        // Función para enviar el mensaje al bot
         function sendMessage() {
             const message = document.getElementById("inputMessage").value;
-            // Enviar el mensaje al bot usando el SDK de Telegram Web App
-            Telegram.WebApp.sendData(message); 
+            // Verificar si el mensaje no está vacío
+            if (message.trim() !== "") {
+                // Enviar el mensaje al bot usando el SDK de Telegram Web App
+                Telegram.WebApp.sendData(message); 
+            } else {
+                alert("Por favor, introduce un mensaje.");
+            }
         }
 
+        // Configuraciones iniciales al cargar la mini app
         window.onload = function() {
-            // Configura el evento para cuando los datos son enviados al bot
+            // Inicializa el SDK de Telegram
+            Telegram.WebApp.ready();
+            // Personaliza el color del botón principal
+            Telegram.WebApp.MainButton.setText("Enviar Mensaje");
+            Telegram.WebApp.MainButton.show();
+            Telegram.WebApp.MainButton.enable();
+
+            // Cuando se haga clic en el botón principal de Telegram
             Telegram.WebApp.onEvent('mainButtonClicked', function() {
-                const message = document.getElementById("inputMessage").value;
-                alert('Mensaje enviado al bot: ' + message);
+                sendMessage(); // Enviar el mensaje al bot
             });
         }
     </script>
@@ -25,6 +38,6 @@
 <body>
     <h1>Envía un mensaje al bot de Telegram</h1>
     <input type="text" id="inputMessage" placeholder="Escribe algo...">
-    <button onclick="sendMessage()">Enviar</button>
+    <button onclick="sendMessage()">Enviar desde la mini app</button>
 </body>
 </html>

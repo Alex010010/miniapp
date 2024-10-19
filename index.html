@@ -1,114 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Test Telegram WebApps API</title>
-   <script src="https://telegram.org/js/telegram-web-app.js"></script> <!--Подключаем скрипт от телеграм-->
-
-   <style>
-      body{
-         color: var(--tg-theme-text-color);
-         background: var(--tg-theme-bg-color);
-         display: flex;
-         flex-direction: column;
-         align-items: center;
-         font-size: 18px;
-      }
-
-      .hint{
-         color: var(--tg-theme-hint-color);
-      }
-
-      .link{
-         color: var(--tg-theme-link-color);
-      }
-
-      .button{
-         background: var(--tg-theme-button-color);
-         color: var(--tg-theme-button-text-color);
-         border: none;
-         font-size: 18px;
-      }
-
-      .button:not(:last-child){
-         margin-bottom: 20px
-      }
-
-      #usercard{
-         text-align: center;
-      }
-   </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+        }
+        .button {
+            background-color: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        #data {
+            margin-top: 20px;
+        }
+    </style>
 </head>
-
 <body>
-   <div id="usercard"> <!--Карта профиля, человека, который к нам обратился-->
-   </div>
-   <p>Just text</p> <!--Просто текст для проверки-->
-   <a class="link" href="https://mihailgok.ru">Link</a> <!--Просто ссылка для проверки-->
-   <p class="hint">Some little hint</p> <!--Просто текст-подсказка для проверки-->
-   <button id="btn" class="button">Show/Hide Main Button</button> <!--Кнопка, чтобы скрыть / показать основную кнопку-->
-   <button id="btnED" class="button">Enable/Disable Main Button</button> <!--Кнопка, чтобы сделать кнопку активной/неактивной-->
+    <h1>Telegram Mini App</h1>
+    <div id="data">
+        <!-- Aquí se mostrará la información obtenida del bot -->
+    </div>
+    <button id="send-data" class="button">Enviar Info al Bot</button>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand(); // Expande la mini app a pantalla completa
+
+        // Enviar datos al bot cuando la página cargue
+        window.onload = () => {
+            tg.sendData("get_info");  // Enviar 'get_info' al bot para que devuelva información inicial
+        };
+
+        // Escuchar la respuesta del bot
+        Telegram.WebApp.onEvent('web_app_data', function(event){
+            const data = event.data;  // Capturamos la data recibida del bot
+            document.getElementById('data').innerText = `Info recibida del Bot: ${data}`;
+        });
+
+        // Enviar datos del usuario al bot cuando se hace clic en el botón
+        document.getElementById('send-data').addEventListener('click', () => {
+            let userInfo = {
+                id: tg.initDataUnsafe.user.id,
+                username: tg.initDataUnsafe.user.username
+            };
+            tg.sendData(JSON.stringify(userInfo));  // Enviar información del usuario al bot
+        });
+    </script>
 </body>
-
-<script>
-   let tg = window.Telegram.WebApp; //получаем объект webapp телеграма 
-
-   tg.expand(); //расширяем на все окно  
-
-   tg.MainButton.text = "Changed Text"; //изменяем текст кнопки 
-   tg.MainButton.setText("Changed Text1"); //изменяем текст кнопки иначе
-   tg.MainButton.textColor = "#F55353"; //изменяем цвет текста кнопки
-   tg.MainButton.color = "#143F6B"; //изменяем цвет бэкграунда кнопки
-   tg.MainButton.setParams({"color": "#143F6B"}); //так изменяются все параметры
-
-   let btn = document.getElementById("btn"); //получаем кнопку скрыть/показать 
-
-   btn.addEventListener('click', function(){ //вешаем событие на нажатие html-кнопки
-      if (tg.MainButton.isVisible){ //если кнопка показана 
-         tg.MainButton.hide() //скрываем кнопку 
-      }
-      else{ //иначе
-         tg.MainButton.show() //показываем 
-      }
-   });
-
-   let btnED = document.getElementById("btnED"); //получаем кнопку активировать/деактивировать
-   btnED.addEventListener('click', function(){ //вешаем событие на нажатие html-кнопки
-      if (tg.MainButton.isActive){ //если кнопка показана 
-         tg.MainButton.setParams({"color": "#E0FFFF"}); //меняем цвет
-         tg.MainButton.disable() //скрываем кнопку 
-      }
-      else{ //иначе
-         tg.MainButton.setParams({"color": "#143F6B"}); //меняем цвет
-         tg.MainButton.enable() //показываем 
-      }
-   });
-
-   Telegram.WebApp.onEvent('mainButtonClicked', function(){
-      tg.sendData("ALEX SEND DATA"); 
-      //при клике на основную кнопку отправляем данные в строковом виде
-   });
-
-
-   let usercard = document.getElementById("usercard"); //получаем блок usercard 
-
-   let profName = document.createElement('p'); //создаем параграф
-   profName.innerText = `${tg.initDataUnsafe.user.first_name}
-   ${tg.initDataUnsafe.user.last_name}
-   ${tg.initDataUnsafe.user.username} (${tg.initDataUnsafe.user.language_code})`;
-   //выдем имя, "фамилию", через тире username и код языка
-   usercard.appendChild(profName); //добавляем 
-
-   let userid = document.createElement('p'); //создаем еще параграф 
-   userid.innerText = `${tg.initDataUnsafe.user.id}`; //показываем user_id
-   usercard.appendChild(userid); //добавляем
-
-
-   //работает только в attachment menu
-   // let pic = document.createElement('img'); //создаем img
-   // pic.src = tg.initDataUnsafe.user.photo_url; //задаём src 
-   // usercard.appendChild(pic); //добавляем элемент в карточку 
-</script>
 </html>

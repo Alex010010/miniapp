@@ -8,22 +8,36 @@
 </head>
 <body>
     <h1>Mini App de Telegram</h1>
+    <p id="message"></p>
     <button id="sendToBackend">Enviar "Hello World" al Backend</button>
     <button id="requestFromBackend">Solicitar saludo del Backend</button>
 
     <script>
         const tg = window.Telegram.WebApp;
 
+        // Función para obtener parámetros de la URL
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // Mostrar el mensaje de la URL al cargar
+        window.onload = function() {
+            const message = getUrlParameter('message');
+            if (message) {
+                document.getElementById('message').textContent = message;
+            }
+        }
+
         document.getElementById('sendToBackend').addEventListener('click', () => {
             tg.sendData(JSON.stringify({action: 'sendToBackend', message: 'Hello World desde front'}));
         });
 
         document.getElementById('requestFromBackend').addEventListener('click', () => {
-            tg.sendData(JSON.stringify({action: 'requestFromBackend'}));
-        });
-
-        tg.onEvent('mainButtonClicked', () => {
-            tg.sendData(JSON.stringify({action: 'mainButtonClicked'}));
+            // Aquí podrías recargar la página con un nuevo parámetro, por ejemplo
+            window.location.href = window.location.pathname + '?message=Nuevo saludo desde back';
         });
 
         tg.MainButton.setText('Botón Principal').show();

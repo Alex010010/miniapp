@@ -33,17 +33,17 @@
 
         // Botón para enviar "Hello World desde front" al bot
         document.getElementById('send-to-backend').addEventListener('click', () => {
-            tg.sendData("Hello World desde front");
+            tg.sendData("Hello World desde front"); // Envía al bot
         });
 
         // Botón para solicitar un saludo desde el backend
         document.getElementById('request-from-backend').addEventListener('click', () => {
-            tg.sendData("request_hello");
+            tg.sendData("request_hello"); // Envía al bot para solicitar saludo
         });
 
-        // Maneja la respuesta del backend para mostrar una alerta en el front
-        tg.onEvent('web_app_data', function(event) {
-            alert("Mensaje recibido del backend: " + event.data);
+        // Maneja la respuesta del backend
+        tg.onEvent('mainButtonClicked', function(event) {
+            alert("Mensaje recibido del backend: " + event.data); // Muestra la alerta
         });
     </script>
 </body>

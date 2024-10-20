@@ -41,9 +41,9 @@
             tg.sendData("request_hello"); // Envía al bot para solicitar saludo
         });
 
-        // Maneja la respuesta del backend
-        tg.onEvent('mainButtonClicked', function(event) {
-            alert("Mensaje recibido del backend: " + event.data); // Muestra la alerta
+        // Escuchar la respuesta del backend en forma de 'web_app_data'
+        Telegram.WebApp.onEvent('web_app_data', function(event) {
+            alert("Mensaje recibido del backend: " + event.data); // Muestra la alerta con el mensaje
         });
     </script>
 </body>

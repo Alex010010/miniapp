@@ -7,60 +7,43 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-color: var(--tg-theme-bg-color);
-            color: var(--tg-theme-text-color);
+            font-family: Arial, sans-serif;
         }
-        .button {
-            background-color: var(--tg-theme-button-color);
-            color: var(--tg-theme-button-text-color);
-            border: none;
+        button {
+            margin: 10px;
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
-            margin: 10px;
-        }
-        #data {
-            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Telegram Mini App</h1>
-    <button id="send-data" class="button">Enviar Información al Bot</button>
-    <button id="get-data" class="button">Solicitar Información del Bot</button>
-
-    <div id="data">
-        <!-- Aquí se mostrará la información recibida del bot -->
-    </div>
+    <h1>Mini App de Telegram</h1>
+    <button id="send-to-backend">Enviar 'Hello World desde front'</button>
+    <button id="request-from-backend">Solicitar saludo desde backend</button>
 
     <script>
         let tg = window.Telegram.WebApp;
-        tg.expand(); // Expande la mini app
+        tg.expand(); // Expande la app
 
-        // Manejo de evento para recibir datos del bot
-        Telegram.WebApp.onEvent('web_app_data', function(event){
-            const data = event.data;  // Capturamos los datos enviados desde el bot
-            document.getElementById('data').innerText = `Datos recibidos del Bot: ${data}`;
+        // Botón para enviar "Hello World desde front" al bot
+        document.getElementById('send-to-backend').addEventListener('click', () => {
+            tg.sendData("Hello World desde front");
         });
 
-        // Enviar información al bot al hacer clic en "Enviar Información"
-        document.getElementById('send-data').addEventListener('click', () => {
-            let userInfo = {
-                id: tg.initDataUnsafe.user.id,
-                username: tg.initDataUnsafe.user.username
-            };
-            tg.sendData(JSON.stringify(userInfo));  // Enviar la información del usuario al bot
+        // Botón para solicitar un saludo desde el backend
+        document.getElementById('request-from-backend').addEventListener('click', () => {
+            tg.sendData("request_hello");
         });
 
-        // Solicitar información del bot al hacer clic en "Solicitar Información"
-        document.getElementById('get-data').addEventListener('click', () => {
-            tg.sendData("request_info");  // Solicitar información del bot
+        // Maneja la respuesta del backend para mostrar una alerta en el front
+        tg.onEvent('web_app_data', function(event) {
+            alert("Mensaje recibido del backend: " + event.data);
         });
     </script>
 </body>
